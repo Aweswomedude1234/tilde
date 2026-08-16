@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Termark - bookmarks for your terminal.
+Tilde - bookmarks for your terminal.
 
 Save a whole terminal page (commands and their output), a single command,
 a file, or a folder. Keep a bookmark global, or scoped to the folder you
@@ -20,7 +20,8 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
-APP = "termark"
+APP = "tilde"
+LEGACY_APP = "termark"
 VERSION = "1.0.0"
 
 # ------------------------------------------------------------------ colors
@@ -70,10 +71,14 @@ def invert(t):
 def config_dir() -> Path:
     if IS_WIN:
         base = os.environ.get("APPDATA") or str(Path.home() / "AppData" / "Roaming")
-        return Path(base) / APP
+        alt = Path(base) / LEGACY_APP
+        new = Path(base) / APP
+        return new if (not alt.exists() or new.exists()) else alt
     xdg = os.environ.get("XDG_CONFIG_HOME")
     base = Path(xdg) if xdg else (Path.home() / ".config")
-    return base / APP
+    alt = base / LEGACY_APP
+    new = base / APP
+    return new if (not alt.exists() or new.exists()) else alt
 
 
 def store_path() -> Path:
@@ -159,7 +164,7 @@ def cwd() -> str:
 
 def term_id() -> str:
     """A stable id for the current terminal session, set by the shell hook."""
-    return os.environ.get("TERMARK_SESSION", "default")
+    return os.environ.get("TILDE_SESSION") or os.environ.get("TERMARK_SESSION") or "default"
 
 
 def next_id(db) -> int:
@@ -233,7 +238,7 @@ def line(*parts):
 
 
 def err(msg):
-    print(f"{c('termark', '31')}: {msg}", file=sys.stderr)
+    print(f"{c('tilde', '31')}: {msg}", file=sys.stderr)
 
 
 def ok(msg):
@@ -274,14 +279,14 @@ def cmd_save(args):
         if not text:
             text = last_command()
         if not text:
-            err("no command given and none found in this session. try: termark save command \"ls -la\"")
+            err("no command given and none found in this session. try: tilde save command \"ls -la\"")
             return 1
         b = _new(db, "command", name, content=text)
 
     elif kind == "file":
         path, name = _split_value_name(rest)
         if not path:
-            err("which file? try: termark save file ./notes.md")
+            err("which file? try: tilde save file ./notes.md")
             return 1
         ap = str(Path(path).expanduser().resolve())
         if not Path(ap).exists():
@@ -304,7 +309,7 @@ def cmd_save(args):
         transcript = read_session()
         if not transcript:
             err("no terminal page recorded yet. install the shell hook, then run some commands.")
-            print(dim("       see: termark welcome"))
+            print(dim("       see: tilde welcome"))
             return 1
         b = _new(db, "session", name, content=transcript)
 
@@ -362,7 +367,7 @@ def cmd_list(args):
 
     if not items:
         print(dim("no bookmarks here yet."))
-        print(dim("try:   termark save folder   or   termark welcome"))
+        print(dim("try:   tilde save folder   or   tilde welcome"))
         return 0
 
     items.sort(key=lambda b: b["id"], reverse=True)
@@ -382,7 +387,7 @@ def cmd_list(args):
             print(f"      {dim(preview)}")
         print(f"      {meta}")
     print(dim("  " + "-" * 40))
-    print(dim(f"  {len(items)} shown . open one with:  termark open <id or name>"))
+    print(dim(f"  {len(items)} shown . open one with:  tilde open <id or name>"))
     return 0
 
 
@@ -398,7 +403,7 @@ def _preview(b):
 
 def cmd_show(args):
     if not args:
-        err("show what? try: termark show 3")
+        err("show what? try: tilde show 3")
         return 1
     db = load()
     b = find(db, args[0])
@@ -422,7 +427,7 @@ def cmd_show(args):
 
 def cmd_open(args):
     if not args:
-        err("open what? try: termark open 3")
+        err("open what? try: tilde open 3")
         return 1
     db = load()
     b = find(db, args[0])
@@ -459,7 +464,7 @@ def cmd_open(args):
 
 def cmd_rm(args):
     if not args:
-        err("remove what? try: termark rm 3")
+        err("remove what? try: tilde rm 3")
         return 1
     db = load()
     removed = []
@@ -479,7 +484,7 @@ def cmd_rm(args):
 
 def cmd_search(args):
     if not args:
-        err("search for what? try: termark search deploy")
+        err("search for what? try: tilde search deploy")
         return 1
     q = " ".join(args).lower()
     db = load()
@@ -558,36 +563,36 @@ def cmd_welcome(args):
     ensure_dirs()
     b = bold
     print()
-    print(b("  Termark") + dim("  bookmarks for your terminal"))
+    print(b("  Tilde") + dim("  bookmarks for your terminal"))
     print(dim("  " + "-" * 46))
     print("""  Save the things you keep hunting for: a whole
   terminal page, one command, a file, or a folder.
 """)
     print(b("  1. Save something"))
-    print(dim("     a command   ") + "termark save command \"kubectl get pods\"")
-    print(dim("     a file      ") + "termark save file ./deploy.yaml")
-    print(dim("     a folder    ") + "termark save folder ~/work/api")
-    print(dim("     this page   ") + "termark save page as \"friday deploy\"")
+    print(dim("     a command   ") + "tilde save command \"kubectl get pods\"")
+    print(dim("     a file      ") + "tilde save file ./deploy.yaml")
+    print(dim("     a folder    ") + "tilde save folder ~/work/api")
+    print(dim("     this page   ") + "tilde save page as \"friday deploy\"")
     print()
     print(b("  2. Choose where it lives"))
     print("     Bookmarks are tied to the folder you saved them in.")
     print("     Add " + b("--global") + " to see one from anywhere.")
-    print(dim("     example    ") + "termark save file ~/.zshrc --global")
+    print(dim("     example    ") + "tilde save file ~/.zshrc --global")
     print()
     print(b("  3. Find it later"))
-    print(dim("     list       ") + "termark list")
-    print(dim("     search     ") + "termark search deploy")
-    print(dim("     open       ") + "termark open \"friday deploy\"")
+    print(dim("     list       ") + "tilde list")
+    print(dim("     search     ") + "tilde search deploy")
+    print(dim("     open       ") + "tilde open \"friday deploy\"")
     print(dim("     (open copies a command, reveals a file, replays a page)"))
     print()
     print(b("  4. Capture full pages"))
     print("     To bookmark a page with its output, install the")
     print("     shell hook once, or wrap a session in a recorder:")
-    print(dim("     hook       ") + "termark install")
-    print(dim("     recorder   ") + "termark record")
+    print(dim("     hook       ") + "tilde install")
+    print(dim("     recorder   ") + "tilde record")
     print()
     print(dim("  " + "-" * 46))
-    print(dim("  that is everything. run  termark list  to begin."))
+    print(dim("  that is everything. run  tilde list  to begin."))
     print()
     return 0
 
@@ -654,29 +659,29 @@ def help_save():
 
 def cmd_help(args):
     print()
-    print(bold(f"  termark {VERSION}") + dim("  bookmarks for your terminal"))
+    print(bold(f"  tilde {VERSION}") + dim("  bookmarks for your terminal"))
     print()
     print(bold("  save"))
-    print("    termark save command \"git rebase -i HEAD~3\"")
-    print("    termark save file ./notes.md")
-    print("    termark save folder ~/work/api as api")
-    print("    termark save page as \"friday deploy\"")
+    print("    tilde save command \"git rebase -i HEAD~3\"")
+    print("    tilde save file ./notes.md")
+    print("    tilde save folder ~/work/api as api")
+    print("    tilde save page as \"friday deploy\"")
     print(dim("    flags:  --global | -g    --local | -l    as <name>"))
     print()
     print(bold("  find"))
-    print("    termark list            bookmarks here plus global ones")
-    print("    termark list --all      every bookmark, every folder")
-    print("    termark search <text>   search names and contents")
+    print("    tilde list            bookmarks here plus global ones")
+    print("    tilde list --all      every bookmark, every folder")
+    print("    tilde search <text>   search names and contents")
     print()
     print(bold("  use"))
-    print("    termark show  <id|name> print a bookmark")
-    print("    termark open  <id|name> copy a command, reveal a file, replay a page")
-    print("    termark rm    <id|name> remove one or more")
+    print("    tilde show  <id|name> print a bookmark")
+    print("    tilde open  <id|name> copy a command, reveal a file, replay a page")
+    print("    tilde rm    <id|name> remove one or more")
     print()
     print(bold("  set up"))
-    print("    termark welcome         the 4 step tour")
-    print("    termark install         print the shell hook line")
-    print("    termark record          record a full page with its output")
+    print("    tilde welcome         the 4 step tour")
+    print("    tilde install         print the shell hook line")
+    print("    tilde record          record a full page with its output")
     print()
     print(dim(f"  bookmarks live in  {store_path()}"))
     print()
@@ -714,7 +719,7 @@ def main(argv=None):
             return cmd_welcome([])
         return cmd_help([])
     if argv[0] in ("-v", "--version", "version"):
-        print(f"termark {VERSION} on {platform.system()}")
+        print(f"tilde {VERSION} on {platform.system()}")
         return 0
     cmd = argv[0]
     fn = COMMANDS.get(cmd)

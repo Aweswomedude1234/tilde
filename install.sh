@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Termark installer for macOS and Linux.
+# Tilde installer for macOS and Linux.
 # Run:  bash install.sh
 set -e
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$HOME/.local/bin"
-LAUNCHER="$BIN_DIR/termark"
+LAUNCHER="$BIN_DIR/tilde"
 
 # 1. Python check.
 if ! command -v python3 >/dev/null 2>&1; then
-  echo "Termark needs python3. Install it, then run this again."
+  echo "Tilde needs python3. Install it, then run this again."
   exit 1
 fi
 
@@ -27,7 +27,7 @@ case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
   *)
     echo
-    echo "Add this to your shell rc file so 'termark' is found:"
+    echo "Add this to your shell rc file so 'tilde' is found:"
     echo "    export PATH=\"$BIN_DIR:\$PATH\""
     ;;
 esac
@@ -43,4 +43,4 @@ case "$SHELL_NAME" in
 esac
 
 echo
-echo "Then open a new terminal and run:  termark welcome"
+echo "Then open a new terminal and run:  tilde welcome"

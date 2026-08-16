@@ -1,10 +1,12 @@
-# Termark
+# Tilde
 
 Bookmarks for your terminal. Save a whole terminal page (commands and their
 output), a single command, a file, or a folder. Keep a bookmark global, or
 scoped to the folder you were in when you saved it.
 
 Works on macOS and Windows. One Python file, no third party packages.
+
+Tilde is free and open to use.
 
 ```
 saved  PAGE friday deploy  here  #4
@@ -26,9 +28,9 @@ Windows (PowerShell):
 powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
-The installer puts a `termark` launcher on your PATH and tells you the one
+The installer puts a `tilde` launcher on your PATH and tells you the one
 line to add to your shell so full pages can be captured. Open a new terminal
-and run `termark welcome` for the tour.
+and run `tilde welcome` for the tour.
 
 You can also run it without installing:
 
@@ -40,39 +42,39 @@ python3 termark.py welcome
 
 | Thing    | Command                                       |
 | -------- | --------------------------------------------- |
-| A command| `termark save command "kubectl get pods -A"`  |
-| A file   | `termark save file ./deploy.yaml`             |
-| A folder | `termark save folder ~/work/api`              |
-| A page   | `termark save page`                           |
+| A command| `tilde save command "kubectl get pods -A"`  |
+| A file   | `tilde save file ./deploy.yaml`             |
+| A folder | `tilde save folder ~/work/api`              |
+| A page   | `tilde save page`                           |
 
 Name any of them with `as`:
 
 ```bash
-termark save folder ~/work/api as api
-termark save page as "friday deploy"
+tilde save folder ~/work/api as api
+tilde save page as "friday deploy"
 ```
 
 ## Global or folder only
 
-Every bookmark is tied to the folder you saved it in. Running `termark list`
+Every bookmark is tied to the folder you saved it in. Running `tilde list`
 shows the bookmarks for the folder you are in, plus every global one. Add
 `--global` (or `-g`) to make a bookmark show up everywhere.
 
 ```bash
-termark save file ./notes.md            # only shows in this folder
-termark save file ~/.zshrc --global     # shows everywhere
+tilde save file ./notes.md            # only shows in this folder
+tilde save file ~/.zshrc --global     # shows everywhere
 ```
 
 ## Find and use
 
 ```bash
-termark list                 # bookmarks here, plus global ones
-termark list --all           # every bookmark in every folder
-termark search deploy        # search names and contents
+tilde list                 # bookmarks here, plus global ones
+tilde list --all           # every bookmark in every folder
+tilde search deploy        # search names and contents
 
-termark show 3               # print a bookmark
-termark open 3               # act on it
-termark rm 3                 # remove it
+tilde show 3               # print a bookmark
+tilde open 3               # act on it
+tilde rm 3                 # remove it
 ```
 
 `open` does the right thing for each type:
@@ -93,14 +95,14 @@ capture one.
    installer prints the exact line to add. To see it again:
 
    ```bash
-   termark install
+   tilde install
    ```
 
 2. Record a session with output. This wraps your shell in the system
    recorder so both commands and their output are captured:
 
    ```bash
-   termark record
+   tilde record
    # run your commands
    termark save page as "the thing that broke"
    exit
@@ -110,28 +112,28 @@ capture one.
 
 Bookmarks are stored as plain JSON so you can read, sync, or back them up.
 
-- macOS and Linux: `~/.config/termark/bookmarks.json`
-- Windows: `%APPDATA%\termark\bookmarks.json`
+- macOS and Linux: `~/.config/tilde/bookmarks.json`
+- Windows: `%APPDATA%\tilde\bookmarks.json`
 
 ## Command reference
 
 ```
-termark save command "<text>"   save a command (or the last one you ran)
-termark save file <path>        save a file
-termark save folder <path>      save a folder (defaults to here)
-termark save page               save the whole terminal page
+tilde save command "<text>"   save a command (or the last one you ran)
+tilde save file <path>        save a file
+tilde save folder <path>      save a folder (defaults to here)
+tilde save page               save the whole terminal page
     flags:  --global | -g   --local | -l   as <name>
 
-termark list [--all]            list bookmarks
-termark search <text>           search names and contents
-termark show  <id|name>         print a bookmark
-termark open  <id|name>         copy a command, reveal a file, replay a page
-termark rm    <id|name> ...     remove one or more
+tilde list [--all]            list bookmarks
+tilde search <text>           search names and contents
+tilde show  <id|name>         print a bookmark
+tilde open  <id|name>         copy a command, reveal a file, replay a page
+tilde rm    <id|name> ...     remove one or more
 
-termark welcome                 the four step tour
-termark install                 print the shell hook line
-termark record                  record a full page with its output
-termark version
+tilde welcome                 the four step tour
+tilde install                 print the shell hook line
+tilde record                  record a full page with its output
+tilde version
 ```
 
 ## Platform notes
@@ -143,4 +145,4 @@ part is the shell hook, since each shell registers hooks differently:
 - `shell/termark.bash` for bash
 - `shell/termark.ps1`  for PowerShell on Windows
 
-Pick the one for your shell. `termark install` picks it for you.
+Pick the one for your shell. `tilde install` picks it for you.
