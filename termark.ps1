@@ -1,11 +1,11 @@
-# Termark shell hook for PowerShell (Windows, and PowerShell on macOS).
+# Tilde shell hook for PowerShell (Windows, and PowerShell on macOS).
 # Add this line to your profile. Find it by running:  $PROFILE
-#     . "C:\full\path\to\termark\shell\termark.ps1"
+#     . "C:\full\path\to\tilde\shell\termark.ps1"
 # Then open a new terminal.
 #
 # What it does: gives each terminal window its own id, and quietly records
-# the commands you run so that  `termark save page`  and
-# `termark save command`  (with no text) have something to save.
+# the commands you run so that  `tilde save page`  and
+# `tilde save command`  (with no text) have something to save.
 
 # A stable id for this specific terminal window.
 if (-not $env:TERMARK_SESSION) {

@@ -1,11 +1,11 @@
-# Termark shell hook for zsh (the default shell on macOS).
+# Tilde shell hook for zsh (the default shell on macOS).
 # Add this line to ~/.zshrc:
-#     source "/full/path/to/termark/shell/termark.zsh"
+#     source "/full/path/to/tilde/shell/termark.zsh"
 # Then open a new terminal.
 #
 # What it does: gives each terminal window its own id, and quietly records
-# the commands you run so that  `termark save page`  and
-# `termark save command`  (with no text) have something to save.
+# the commands you run so that  `tilde save page`  and
+# `tilde save command`  (with no text) have something to save.
 
 # A stable id for this specific terminal window.
 if [ -z "$TERMARK_SESSION" ]; then
